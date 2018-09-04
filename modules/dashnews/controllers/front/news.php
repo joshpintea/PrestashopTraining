@@ -18,8 +18,6 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
     public function initContent()
     {
         parent::initContent();
-        $idCategory = -1;
-
 
         $news = News::getAll(4);
 
@@ -28,7 +26,6 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
             'title' => 'News',
             'news' => $news,
             'categories' => $categories,
-            'idCategory' => $idCategory,
             'newsUrl' => 'news',
             'displayNewsUrl' => 'display-newsletter'
         ));

@@ -12,7 +12,7 @@
                 Categories:<br>
                 {foreach from=$categories key=row item=category}
                     <a type = 'button'
-                       class="categorynews {if $category.id_categorynews == $idCategory}red{else}blue{/if}"
+                       class="categorynews"
                        id='{$category.id_categorynews}'>
                         {$category.title}
                     </a>

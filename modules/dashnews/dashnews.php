@@ -42,6 +42,7 @@ class DashNews extends Module
             && $this->registerHook('displayHome')
             && $this->registerHook('displayNav2')
             && $this->registerHook('moduleRoutes')
+            && $this->registerHook('header')
             && $this->createImgNewsDir()
             && $this->insertNewsPage();
     }
@@ -261,13 +262,21 @@ class DashNews extends Module
             'title' => 'News',
             'news' => $news
         ));
+
         $this->context->controller->addCSS("modules/dashnews/views/css/news_page.css");
+
         return "<h1>News<h1>" . $this->display(__FILE__, 'display_news.tpl');
     }
 
     public function hookDisplayNav2($parameters)
     {
-        return "<a href='/eu/news'>News</a>";
+
+        $this->context->controller->addCSS("modules/dashnews/views/css/news_tab.css");
+        return $this->display(__FILE__, 'news_tab.tpl');
+    }
+
+    public function hookHeader($params){
+        $this->context->controller->addCSS("modules/dashnews/views/css/news_tab.css");
     }
 
     public function hookModuleRoutes($params){
