@@ -20,13 +20,8 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
         parent::initContent();
         $idCategory = -1;
 
-        if(Tools::getValue('id_categorynews')){
-            $idCategory = Tools::getValue('id_categorynews');
 
-            $news = CategoryNews::getNewsAfterCategoryId($idCategory);
-        }else{
-            $news = News::getAll();
-        }
+        $news = News::getAll(4);
 
         $categories = CategoryNews::getAll();
         $this->context->smarty->assign(array(
@@ -44,5 +39,6 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->context->controller->addCSS($this->module->getLocalPath() . "views/css/news_page.css");
+        $this->context->controller->addJS($this->module->getLocalPath() . "views/js/news.js");
     }
 }

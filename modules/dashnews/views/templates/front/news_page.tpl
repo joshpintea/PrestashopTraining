@@ -4,15 +4,18 @@
 {block name='page_content'}
     <div class="search-box">
         <div class="left">
-            Search: <input type="text" name="search-filter">
+            Search: <input type="text" name="search-filter" id="filter-box">
             <a href="news" type="submit">Reset</a>
             <br>
 
             <div class="categories-container">
                 Categories:<br>
                 {foreach from=$categories key=row item=category}
-                    <a href="{$newsUrl}?id_categorynews={$category.id_categorynews}"
-                       class="{if $category.id_categorynews == $idCategory}red{else}blue{/if}">{$category.title}</a>
+                    <a type = 'button'
+                       class="categorynews {if $category.id_categorynews == $idCategory}red{else}blue{/if}"
+                       id='{$category.id_categorynews}'>
+                        {$category.title}
+                    </a>
                     <br>
                 {/foreach}
             </div>
@@ -20,7 +23,7 @@
 
 
     </div>
-    <div class="right">
+    <div class="right" id="news-content">
         {foreach from=$news key=id item=n}
             <a href="{$displayNewsUrl}/{$n.id_news}">
             <div class='news'>
