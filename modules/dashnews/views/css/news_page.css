@@ -1,0 +1,33 @@
+.news-image{
+    height: 200px;
+    width: auto;
+}
+
+.news{
+    width: 400px;
+    height: 400px;
+    text-align: center;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 20px;
+    display: inline-block;
+}
+
+.left{
+    float: left;
+}
+
+.search-box{
+    width: 300px;
+    overflow: auto;
+    position: relative;
+}
+
+.categories-container{
+    margin-top: 30px;
+    padding: 10px;
+}
+
+.red{
+    color: red;
+}
