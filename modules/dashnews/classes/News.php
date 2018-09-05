@@ -108,4 +108,23 @@ class News extends ObjectModel
 
         return Db::getInstance()->getRow($query);
     }
+
+    public static function uploadImg($id, $targetDir, $imageName)
+    {
+        if ($_FILES[$imageName]['name'] !== '') {
+
+            $fileName = "{$id}." . substr($_FILES[$imageName]['name'],
+                    strrpos($_FILES[$imageName]['name'], '.') + 1); //get extension of the file
+            $targetFile = $targetDir . "/{$fileName}";
+
+            $check = getimagesize($_FILES[$imageName]["tmp_name"]);
+            if ($check !== false) {
+                move_uploaded_file($_FILES[$imageName]["tmp_name"], $targetFile);
+                return $fileName;
+            } else {
+                return '';
+            }
+        }
+        return '';
+    }
 }

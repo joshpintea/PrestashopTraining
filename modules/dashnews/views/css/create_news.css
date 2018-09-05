@@ -1,0 +1,10 @@
+.content {
+    text-align: center;
+}
+
+.error {
+    text-align: center;
+    margin: 15px auto;
+    color: red;
+    font-size: 20px;
+}

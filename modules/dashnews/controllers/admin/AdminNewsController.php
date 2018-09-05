@@ -191,6 +191,7 @@ class AdminNewsController extends AdminController
         } else {
             $image = ($obj->image !== '') ? ($url . $obj->image) : $defaultUrl;
         }
+        dump($image);
         return $image;
     }
 
@@ -219,9 +220,11 @@ class AdminNewsController extends AdminController
                 $dir = $this->getImagesDir();
                 $id = Tools::getValue('id_news');
 
-                $fileName = $this->uploadImg($id, $dir, 'image');
+                if($_FILES['image']['name'] !== '') {
+                    $fileName = News::uploadImg($id, $dir, 'image');
 
-                $db->update('news', array('image' => $fileName), 'id_news=' . $id);
+                    $db->update('news', array('image' => $fileName), 'id_news=' . $id);
+                }
 
                 $db->delete('news_categorynews', 'id_news=' . $id);
 
@@ -240,24 +243,4 @@ class AdminNewsController extends AdminController
     {
         return _PS_IMG_DIR_ . "dashnews";
     }
-
-    private function uploadImg($id, $targetDir, $imageName)
-    {
-        if ($_FILES[$imageName]['name'] !== '') {
-
-            $fileName = "{$id}." . substr($_FILES[$imageName]['name'],
-                    strrpos($_FILES[$imageName]['name'], '.') + 1); //get extension of the file
-            $targetFile = $targetDir . "/{$fileName}";
-
-            $check = getimagesize($_FILES[$imageName]["tmp_name"]);
-            if ($check !== false) {
-                move_uploaded_file($_FILES[$imageName]["tmp_name"], $targetFile);
-                return $fileName;
-            } else {
-                return '';
-            }
-        }
-        return '';
-    }
-
 }

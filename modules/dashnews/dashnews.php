@@ -275,12 +275,23 @@ class DashNews extends Module
         return $this->display(__FILE__, 'news_tab.tpl');
     }
 
-    public function hookHeader($params){
+    public function hookHeader($params)
+    {
         $this->context->controller->addCSS("modules/dashnews/views/css/news_tab.css");
     }
 
-    public function hookModuleRoutes($params){
-        return  [
+    public function hookModuleRoutes($params)
+    {
+        return array(
+            'module-dashnews-createnews' => [
+                'controller' => 'createnews',
+                'rule' => 'news-create',
+                'params' => [
+                    'fc' => 'module',
+                    'module' => 'dashnews',
+                    'controller' => 'createnews'
+                ],
+            ],
             'module-dashnews-newsletterpage' => [
                 'controller' => 'newsletterpage',
                 'rule' => 'display-newsletter/{id_news}',
@@ -290,10 +301,10 @@ class DashNews extends Module
                 'params' => [
                     'fc' => 'module',
                     'module' => 'dashnews',
-                    'controller' => 'news-letterpage'
+                    'controller' => 'newsletterpage'
                 ],
             ],
-        ];
+        );
     }
 
     public function getContent()
@@ -305,16 +316,7 @@ class DashNews extends Module
             if (!$newsPageTitle || empty($newsPageTitle) || !Validate::isGenericName($newsPageTitle)) {
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
-                $db = Db::getInstance();
-
-                $query = new DbQuery();
-                $query->select('id_meta');
-                $query->from('meta');
-                $query->where("page='module-dashnews-news'");
-
-                $obj = $db->executeS($query);
-
-                Db::getInstance()->update('meta_lang', array('title'=>$newsPageTitle),'id_meta=' . $obj[0]['id_meta'] . ' AND id_lang=1');
+                Configuration::updateValue('NEWS_PAGE_TITLE', $newsPageTitle);
 
                 $output .= $this->displayConfirmation($this->l('Settings updated'));
             }
@@ -358,11 +360,9 @@ class DashNews extends Module
             )
         );
 
-        $helper->submit_action = 'submit'.$this->name;
-
+        $helper->submit_action = 'submit' . $this->name;
 
         $helper->fields_value['title'] = Configuration::get('title');
-
 
         return $helper->generateForm($fieldsForm);
     }

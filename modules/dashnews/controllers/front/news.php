@@ -11,7 +11,8 @@ require_once "modules/dashnews/classes/CategoryNews.php";
 class dashnewsnewsModuleFrontController extends ModuleFrontController
 {
 
-    public function init(){
+    public function init()
+    {
         parent::init();
     }
 
@@ -23,7 +24,7 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
 
         $categories = CategoryNews::getAll();
         $this->context->smarty->assign(array(
-            'title' => 'News',
+            'title' => (Configuration::get('NEWS_PAGE_TITLE')) ? Configuration::get('NEWS_PAGE_TITLE') : 'news',
             'news' => $news,
             'categories' => $categories,
             'newsUrl' => 'news',
