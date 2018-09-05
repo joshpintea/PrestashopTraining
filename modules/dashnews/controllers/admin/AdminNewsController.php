@@ -211,7 +211,7 @@ class AdminNewsController extends AdminController
             }
         }
         $imageName = '';
-        if($obj = $this->loadObject(true)){
+        if ($obj = $this->loadObject(true)) {
             $imageName = $obj->image;
         }
 
@@ -223,11 +223,11 @@ class AdminNewsController extends AdminController
                 $dir = $this->getImagesDir();
                 $id = Tools::getValue('id_news');
 
-                if($_FILES['image']['name'] !== '') {
+                if ($_FILES['image']['name'] !== '') {
                     $fileName = News::uploadImg($id, $dir, 'image');
 
                     $db->update('news', array('image' => $fileName), 'id_news=' . $id);
-                }else{
+                } else {
                     $db->update('news', array('image' => $imageName), 'id_news=' . $id);
                 }
 
