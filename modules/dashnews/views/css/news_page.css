@@ -4,7 +4,7 @@
 }
 
 .news{
-    width: 400px;
+    width: 300px;
     height: 400px;
     text-align: center;
     border: 1px solid black;
@@ -13,14 +13,11 @@
     display: inline-block;
 }
 
-.left{
-    float: left;
-}
-
 .search-box{
-    width: 300px;
-    overflow: auto;
-    position: relative;
+    margin-top: 25px;
+    float: left;
+    border: 1px solid black;
+    padding: 15px;
 }
 
 .categories-container{
@@ -28,6 +25,6 @@
     padding: 10px;
 }
 
-.red{
-    color: red;
+.content-news{
+    position: relative;
 }
