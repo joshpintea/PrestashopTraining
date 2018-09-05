@@ -191,7 +191,6 @@ class AdminNewsController extends AdminController
         } else {
             $image = ($obj->image !== '') ? ($url . $obj->image) : $defaultUrl;
         }
-        dump($image);
         return $image;
     }
 
@@ -211,6 +210,10 @@ class AdminNewsController extends AdminController
                 }
             }
         }
+        $imageName = '';
+        if($obj = $this->loadObject(true)){
+            $imageName = $obj->image;
+        }
 
         parent::postProcess();
 
@@ -224,6 +227,8 @@ class AdminNewsController extends AdminController
                     $fileName = News::uploadImg($id, $dir, 'image');
 
                     $db->update('news', array('image' => $fileName), 'id_news=' . $id);
+                }else{
+                    $db->update('news', array('image' => $imageName), 'id_news=' . $id);
                 }
 
                 $db->delete('news_categorynews', 'id_news=' . $id);
