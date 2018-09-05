@@ -27,14 +27,18 @@ class AdminCategoryNewsController extends AdminController
         $this->addRowAction('edit');
         $this->addRowAction('delete');
 
+        $this->setBulkActions();
+        $this->setFieldsList();
+    }
+
+    private function setBulkActions()
+    {
         $this->bulk_actions = array(
             'delete' => array(
                 'text' => $this->l('Delete selected'),
                 'confirm' => $this->l('Delete selected items?')
             )
         );
-
-        $this->setFieldsList();
     }
 
     private function setFieldsList()
@@ -65,6 +69,13 @@ class AdminCategoryNewsController extends AdminController
     }
 
     public function renderForm()
+    {
+        $this->setFormFields();
+
+        return parent::renderForm();
+    }
+
+    private function setFormFields()
     {
         $this->fields_form =
             array(
@@ -100,8 +111,6 @@ class AdminCategoryNewsController extends AdminController
                     'name' => 'submit-news-category'
                 )
             );
-
-        return parent::renderForm();
     }
 
     public function initPageHeaderToolbar()

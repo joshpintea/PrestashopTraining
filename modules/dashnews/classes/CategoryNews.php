@@ -39,14 +39,15 @@ class CategoryNews extends ObjectModel
         return Db::getInstance()->executeS($query);
     }
 
-    public static function getNewsAfterCategoryId($idCategoryNews,$filter = ''){
+    public static function getNewsAfterCategoryId($idCategoryNews, $filter = '')
+    {
         $currentDate = date("Y-m-d");
 
         $query = new DbQuery();
         $query->select('n.`id_news`,n.`image`,n.`date_from`,n.`date_to`,nl.`title`,nl.`description`');
-        $query->from('news','n');
-        $query->leftJoin('news_lang','nl','n.`id_news`=nl.`id_news`');
-        $query->leftJoin('news_categorynews','ncn','n.`id_news` = ncn.`id_news`');
+        $query->from('news', 'n');
+        $query->leftJoin('news_lang', 'nl', 'n.`id_news`=nl.`id_news`');
+        $query->leftJoin('news_categorynews', 'ncn', 'n.`id_news` = ncn.`id_news`');
         $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id
             . ' AND n.`active` = true '
             . ' AND ncn.`id_categorynews` = ' . $idCategoryNews
@@ -56,6 +57,6 @@ class CategoryNews extends ObjectModel
 
         return Db::getInstance()->executeS($query);
 
-        
+
     }
 }

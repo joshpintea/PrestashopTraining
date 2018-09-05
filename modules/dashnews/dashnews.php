@@ -228,16 +228,11 @@ class DashNews extends Module
                                 ) ENGINE = InnoDB;",
         );
 
-        $db = Db::getInstance();
-
-        foreach ($queries as $query) {
-            $ok = $db->execute($query);
-            if ($ok == false) {
-                return false;
-            }
-        }
+        $ok =  $this->executeQueries($queries);
+        if(!$ok) return false;
 
         $this->importData();
+
         return true;
     }
 
@@ -261,6 +256,10 @@ class DashNews extends Module
         return mkdir(self::IMG_DIR_NEWS);
     }
 
+    /**
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     */
     private function insertNewsPage()
     {
         $db = Db::getInstance();
@@ -309,19 +308,14 @@ class DashNews extends Module
             4 => "DROP TABLE {$this->getNewsToCategoryTableName()}",
         );
 
-        $db = Db::getInstance();
-        foreach ($queries as $query) {
-            $ok = $db->execute($query);
-            if ($ok == false) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->executeQueries($queries);
     }
 
     private function deleteImgNewsDir()
     {
+        if(!is_dir(self::IMG_DIR_NEWS))
+            return false;
+
         $this->readDirAndDeleteAllFiles(self::IMG_DIR_NEWS);
         return true;
     }
@@ -414,6 +408,11 @@ class DashNews extends Module
         }
     }
 
+    /**
+     * @param $tableName
+     * @return array
+     * @throws PrestaShopDatabaseException
+     */
     private function getTableFields($tableName)
     {
         $query = "SELECT `COLUMN_NAME`
@@ -431,30 +430,47 @@ class DashNews extends Module
 
     private function importData()
     {
-        $csv = array_map('str_getcsv', file(_PS_MODULE_DIR_ . 'dashnews/migration.csv'));
+        $fileData = array_map('str_getcsv', file(_PS_MODULE_DIR_ . 'dashnews/migration.csv'));
 
-        $count = (int)$csv[0][0];
+        $count = (int)$fileData[0][0];
         $currentLine = 1;
 
         $db = Db::getInstance();
-        for ($i = 0; $i < $count; $i++) {
-            $tableName = $csv[$currentLine][0];
+        for ($counter = 0; $counter < $count; $counter++) {
+            $tableName = $fileData[$currentLine][0];
             $currentLine++;
-            $numberOfRows = $csv[$currentLine][0];
+            $numberOfRows = $fileData[$currentLine][0];
 
             $currentLine++;
-            $fields = $csv[$currentLine];
+            $fields = $fileData[$currentLine];
             $currentLine++;
 
             for ($j = 0; $j < $numberOfRows; $j++) {
                 $data = array();
                 for ($r = 0; $r < count($fields); $r++) {
-                    $data[$fields[$r]] = $csv[$currentLine][$r];
+                    $data[$fields[$r]] = $fileData[$currentLine][$r];
                 }
                 $currentLine++;
                 $db->insert($tableName, $data);
             }
         }
+    }
+
+    /**
+     * @param $queries
+     * @return bool
+     */
+    private function executeQueries($queries)
+    {
+        $db = Db::getInstance();
+
+        foreach ($queries as $query) {
+            $ok = $db->execute($query);
+            if ($ok == false) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

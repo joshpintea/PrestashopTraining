@@ -34,7 +34,7 @@ class News extends ObjectModel
                 'required' => true
             ),
             'deleted' => array('type' => self::TYPE_INT),
-        )
+        ),
     );
     public $id_news;
     public $image;
@@ -43,6 +43,7 @@ class News extends ObjectModel
     public $deleted;
     public $date_from;
     public $date_to;
+
     /**
      * @var bool  News status
      */
@@ -55,7 +56,7 @@ class News extends ObjectModel
      * @return array|false|mysqli_result|null|PDOStatement|resource
      * @throws PrestaShopDatabaseException
      */
-    public static function getAll($limit = 0,$filter = '')
+    public static function getAll($limit = 0, $filter = '')
     {
         $currentDate = date("Y-m-d");
 
@@ -77,29 +78,8 @@ class News extends ObjectModel
         return Db::getInstance()->executeS($query);
     }
 
-    /**
-     * get all id_categories for this news
-     * @return array
-     * @throws PrestaShopDatabaseException
-     */
-    public function getCategories()
+    public static function getNewsLetterAfterId($idNews)
     {
-        $query = new DbQuery();
-        $query->select('id_categorynews');
-        $query->from('news_categorynews');
-        $query->where('id_news=' . $this->id_news);
-
-        $resultQuery = Db::getInstance()->executeS($query);
-        $result = array();
-
-        foreach ($resultQuery as $key => $value) {
-            $result[] = $value['id_categorynews'];
-        }
-
-        return $result;
-    }
-
-    public static function getNewsLetterAfterId($idNews){
         $query = new DbQuery();
         $query->select('n.`id_news`, n.`image`,n.`date_from`,n.`date_to`, nl.`title`, nl.`description`');
         $query->from('news', 'n');
@@ -126,5 +106,27 @@ class News extends ObjectModel
             }
         }
         return '';
+    }
+
+    /**
+     * get all id_categories for this news
+     * @return array
+     * @throws PrestaShopDatabaseException
+     */
+    public function getCategories()
+    {
+        $query = new DbQuery();
+        $query->select('id_categorynews');
+        $query->from('news_categorynews');
+        $query->where('id_news=' . $this->id_news);
+
+        $resultQuery = Db::getInstance()->executeS($query);
+        $result = array();
+
+        foreach ($resultQuery as $key => $value) {
+            $result[] = $value['id_categorynews'];
+        }
+
+        return $result;
     }
 }

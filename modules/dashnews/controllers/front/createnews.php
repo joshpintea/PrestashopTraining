@@ -5,7 +5,7 @@
  * Time: 3:50 PM
  */
 
-require_once "modules/dashnews/classes/CategoryNews.php";
+require_once(_PS_MODULE_DIR_ . "dashnews/classes/CategoryNews.php");
 require_once(_PS_MODULE_DIR_ . "dashnews/classes/News.php");
 
 class dashnewscreatenewsModuleFrontController extends ModuleFrontController

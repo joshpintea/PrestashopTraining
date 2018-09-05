@@ -37,6 +37,7 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
     {
         parent::setMedia();
         $this->context->controller->addCSS($this->module->getLocalPath() . "views/css/news_page.css");
+        $this->context->controller->addJS($this->module->getLocalPath() . "views/js/RequestHandler.js");
         $this->context->controller->addJS($this->module->getLocalPath() . "views/js/news.js");
     }
 }

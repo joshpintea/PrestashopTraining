@@ -197,19 +197,11 @@ class AdminNewsController extends AdminController
     public function postProcess()
     {
         //check if date_from is less than date_to
-        if (Tools::isSubmit('submit-news')) {
-            if (Tools::getValue('date_from') && Tools::getValue('date_to')) {
-                $dateFrom = Tools::getValue('date_from');
-                $dateTo = Tools::getValue('date_to');
-
-                $dateTimestampFrom = strtotime($dateFrom);
-                $dateTimestampTo = strtotime($dateTo);
-
-                if ($dateTimestampFrom > $dateTimestampTo) {
-                    return;
-                }
-            }
+        $ok = $this->validateInputDates();
+        if (!$ok) {
+            return;
         }
+
         $imageName = '';
         if ($obj = $this->loadObject(true)) {
             $imageName = $obj->image;
@@ -219,33 +211,71 @@ class AdminNewsController extends AdminController
 
         if (empty($this->errors)) {
             if (Tools::isSubmit('submit-news')) {
-                $db = Db::getInstance();
-                $dir = $this->getImagesDir();
-                $id = Tools::getValue('id_news');
+                $this->updateNewsImage($imageName);
 
-                if ($_FILES['image']['name'] !== '') {
-                    $fileName = News::uploadImg($id, $dir, 'image');
+                $this->updateNewsCategories();
+            }
+        }
+    }
 
-                    $db->update('news', array('image' => $fileName), 'id_news=' . $id);
-                } else {
-                    $db->update('news', array('image' => $imageName), 'id_news=' . $id);
-                }
+    /**
+     * @return bool
+     */
+    private function validateInputDates()
+    {
+        if (Tools::isSubmit('submit-news')) {
+            if (Tools::getValue('date_from') && Tools::getValue('date_to')) {
+                $dateFrom = Tools::getValue('date_from');
+                $dateTo = Tools::getValue('date_to');
 
-                $db->delete('news_categorynews', 'id_news=' . $id);
+                $dateTimestampFrom = strtotime($dateFrom);
+                $dateTimestampTo = strtotime($dateTo);
 
-                if (Tools::getValue('categories')) {
-                    $categories = Tools::getValue('categories');
-
-                    foreach ($categories as $k => $categoryId) {
-                        $db->insert('news_categorynews', array('id_categorynews' => $categoryId, 'id_news' => $id));
-                    }
+                if ($dateTimestampFrom > $dateTimestampTo) {
+                    return false;
                 }
             }
         }
+        return true;
+    }
+
+    /**
+     * @param $imageName
+     * @return array
+     */
+    private function updateNewsImage($imageName)
+    {
+        $db = Db::getInstance();
+        $dir = $this->getImagesDir();
+        $id = Tools::getValue('id_news');
+
+        if ($_FILES['image']['name'] !== '') {
+            $fileName = News::uploadImg($id, $dir, 'image');
+
+            $db->update('news', array('image' => $fileName), 'id_news=' . $id);
+        } else {
+            $db->update('news', array('image' => $imageName), 'id_news=' . $id);
+        }
+        return array($db, $id);
     }
 
     private function getImagesDir()
     {
         return _PS_IMG_DIR_ . "dashnews";
+    }
+
+    private function updateNewsCategories()
+    {
+        $db = Db::getInstance();
+        $id = Tools::getValue('id_news');
+        $db->delete('news_categorynews', 'id_news=' . $id);
+
+        if (Tools::getValue('categories')) {
+            $categories = Tools::getValue('categories');
+
+            foreach ($categories as $k => $categoryId) {
+                $db->insert('news_categorynews', array('id_categorynews' => $categoryId, 'id_news' => $id));
+            }
+        }
     }
 }

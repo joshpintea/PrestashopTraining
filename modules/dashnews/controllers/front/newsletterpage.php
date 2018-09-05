@@ -8,7 +8,8 @@
 
 class dashnewsnewsletterpageModuleFrontController extends ModuleFrontController
 {
-    public function init(){
+    public function init()
+    {
         parent::init();
     }
 
@@ -16,7 +17,7 @@ class dashnewsnewsletterpageModuleFrontController extends ModuleFrontController
     {
         parent::initContent();
 
-        if(Tools::getValue('id_news')){
+        if (Tools::getValue('id_news')) {
             $newsLetter = News::getNewsLetterAfterId(Tools::getValue('id_news'));
         }
 
