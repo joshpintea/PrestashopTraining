@@ -64,12 +64,12 @@ class News extends ObjectModel
         $query->select('n.`id_news`, n.`image`,n.`date_from`,n.`date_to`, nl.`title`, nl.`description`');
         $query->from('news', 'n');
         $query->leftJoin('news_lang', 'nl', 'nl.`id_news` = n.`id_news`');
-        $query->where('nl.`id_lang` = '
-            . (int)Context::getContext()->language->id
-            . ' AND n.`active` = true'
-            . ' AND n.`date_to` > ' . "'" . $currentDate . "'"
-            . ' AND nl.`title` LIKE ' . "'%{$filter}%'"
-        );
+
+        $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id);
+        $query->where('n.`active` = true');
+        $query->where('n.`date_to` > ' . "'" . $currentDate . "'");
+        $query->where('nl.`title` LIKE ' . "'%{$filter}%'");
+
         $query->orderBy('n.date_to DESC');
         if ($limit != 0) {
             $query->limit($limit);
@@ -78,6 +78,11 @@ class News extends ObjectModel
         return Db::getInstance()->executeS($query);
     }
 
+    /**
+     * getNewsById
+     * @param $idNews
+     * @return array|bool|null|object
+     */
     public static function getNewsLetterAfterId($idNews)
     {
         $query = new DbQuery();

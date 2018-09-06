@@ -11,16 +11,11 @@ require_once "modules/dashnews/classes/CategoryNews.php";
 class dashnewsnewsModuleFrontController extends ModuleFrontController
 {
 
-    public function init()
-    {
-        parent::init();
-    }
-
     public function initContent()
     {
         parent::initContent();
 
-        $news = News::getAll(4);
+        $news = News::getAll(Configuration::get('NUMBER_OF_NEWS_DISPLAYED'));
 
         $categories = CategoryNews::getAll();
         $this->context->smarty->assign(array(

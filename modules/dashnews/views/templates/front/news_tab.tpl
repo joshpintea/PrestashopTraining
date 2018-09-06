@@ -1,7 +1,7 @@
 <div class="dropdown blockcart">
-    <span>News</span>
+    <span>{l s="News"}</span>
     <div class="dropdown-content">
-        <a href="/eu/news">News</a><br>
-        <a href="/eu/module/dashnews/createnews">Create news</a>
+        <a href="{$link->getModuleLink('dashnews', 'news')}">{l s="News"}</a><br>
+        <a href="{$link->getModuleLink('dashnews', 'createnews')}">{l s="Create news"}</a>
     </div>
 </div>

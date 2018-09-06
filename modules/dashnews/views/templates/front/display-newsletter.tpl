@@ -5,15 +5,15 @@
         <div class = 'image' style="background-image:  url('{if $newsLetter.image==''}../../modules/dashnews/default.jpg{else}../../img/dashnews/{$newsLetter.image}{/if}')"></div>
 
         <div class="title">
-            <strong>Title: </strong>{$newsLetter.title}
+            <strong>{l s="Title"}: </strong>{$newsLetter.title}
         </div>
 
         <div class="description">
-            <strong>Description: </strong> {$newsLetter.description}
+            <strong>{l s="Description"}: </strong> {$newsLetter.description}
         </div>
 
         <div>
-            Available until:  {$newsLetter.date_to}
+            {l s="Available until"}: {$newsLetter.date_to}
         </div>
 
     </div>

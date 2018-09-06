@@ -40,11 +40,13 @@ class AdminNewsController extends AdminController
             )
         );
 
-
         $this->setFieldsList();
 
     }
 
+    /**
+     * set field list
+     */
     private function setFieldsList()
     {
         $this->fields_list = array(
@@ -75,15 +77,10 @@ class AdminNewsController extends AdminController
                 'active' => 'status',
                 'align' => 'center',
                 'type' => 'bool',
-                'orderby' => false
+                'filter_key' => 'a!active',
             )
 
         );
-    }
-
-    public function setMedia()
-    {
-        parent::setMedia();
     }
 
     public function initPageHeaderToolbar()
@@ -100,7 +97,6 @@ class AdminNewsController extends AdminController
 
     public function renderForm()
     {
-
         if (!($obj = $this->loadObject(true))) {
             return;
         }
@@ -182,6 +178,11 @@ class AdminNewsController extends AdminController
         return parent::renderForm();
     }
 
+    /**
+     * return image url: default url if the news didn't have set an image
+     * @param $obj
+     * @return string
+     */
     private function getImageUrl($obj)
     {
         $defaultUrl = "../modules/dashnews/default.jpg";
@@ -214,6 +215,7 @@ class AdminNewsController extends AdminController
                 $this->updateNewsImage($imageName);
 
                 $this->updateNewsCategories();
+
             }
         }
     }
@@ -264,6 +266,10 @@ class AdminNewsController extends AdminController
         return _PS_IMG_DIR_ . "dashnews";
     }
 
+    /**
+     * update news category
+     * @throws PrestaShopDatabaseException
+     */
     private function updateNewsCategories()
     {
         $db = Db::getInstance();

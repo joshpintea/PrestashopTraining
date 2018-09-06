@@ -48,12 +48,13 @@ class CategoryNews extends ObjectModel
         $query->from('news', 'n');
         $query->leftJoin('news_lang', 'nl', 'n.`id_news`=nl.`id_news`');
         $query->leftJoin('news_categorynews', 'ncn', 'n.`id_news` = ncn.`id_news`');
-        $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id
-            . ' AND n.`active` = true '
-            . ' AND ncn.`id_categorynews` = ' . $idCategoryNews
-            . ' AND n.`date_to` > ' . "'" . $currentDate . "'"
-            . ' AND nl.`title` LIKE ' . "'%{$filter}%'"
-        );
+
+        $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id);
+        $query->where('n.`active` = true ');
+        $query->where('ncn.`id_categorynews` = ' . $idCategoryNews);
+        $query->where('ncn.`id_categorynews` = ' . $idCategoryNews);
+        $query->where('n.`date_to` > ' . "'" . $currentDate . "'");
+        $query->where('nl.`title` LIKE ' . "'%{$filter}%'");
 
         return Db::getInstance()->executeS($query);
 

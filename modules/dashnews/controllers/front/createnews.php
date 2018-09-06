@@ -11,11 +11,6 @@ require_once(_PS_MODULE_DIR_ . "dashnews/classes/News.php");
 class dashnewscreatenewsModuleFrontController extends ModuleFrontController
 {
 
-    public function init()
-    {
-        parent::init();
-    }
-
     public function setMedia()
     {
         parent::setMedia();
@@ -25,8 +20,8 @@ class dashnewscreatenewsModuleFrontController extends ModuleFrontController
     public function postProcess()
     {
         if (Tools::isSubmit('create-news')) {
-            $title = Tools::getValue('title');
-            $description = Tools::getValue('description');
+            $title = pSQL(Tools::getValue('title'));
+            $description = pSQL(Tools::getValue('description'));
             $dateFrom = Tools::getValue('date-from');
             $dateTo = Tools::getValue('date-to');
             $categories = Tools::getValue('categories');

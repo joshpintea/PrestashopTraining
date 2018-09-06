@@ -8,11 +8,6 @@
 
 class dashnewsnewsletterpageModuleFrontController extends ModuleFrontController
 {
-    public function init()
-    {
-        parent::init();
-    }
-
     public function initContent()
     {
         parent::initContent();
