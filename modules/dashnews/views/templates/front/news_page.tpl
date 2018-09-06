@@ -1,5 +1,7 @@
 {extends file='layouts/layout-both-columns.tpl'}
-
+{block name='head_seo_title'}
+    {$title}
+{/block}
 {block name="left_column"}
     <div class="content-news">
         <div class="search-box">

@@ -197,6 +197,9 @@ class AdminNewsController extends AdminController
 
     public function postProcess()
     {
+
+        //$this->copyImagesFromInto(_PS_IMG_DIR_ . "dashnews", _PS_MODULE_DIR_ . "dashnews/backup/images");
+        //dump($var);
         //check if date_from is less than date_to
         $ok = $this->validateInputDates();
         if (!$ok) {

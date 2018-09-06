@@ -76,6 +76,11 @@ class DashNews extends Module
             $this->context->controller->errors[] = "can't installed the module";
         }
 
+        if ($result && !$this->createImgNewsDir()) {
+            $result = false;
+            $this->context->controller->errors[] = "can't create images dir";
+        }
+
         if ($result && !$this->createTables()) {
             $result = false;
             $this->context->controller->errors[] = "can't create tables";
@@ -101,17 +106,21 @@ class DashNews extends Module
             $this->context->controller->errors[] = "can't register moduleRoutes hook";
         }
 
-        if ($result && !$this->registerHook('header')) {
+        if ($result && !$this->registerHook('actionFrontControllerSetMedia')) {
             $result = false;
             $this->context->controller->errors[] = "can't register header hook";
         }
 
-        if ($result && !$this->createImgNewsDir()) {
-            $result = false;
-            $this->context->controller->errors[] = "can't create images dir";
-        }
-
         return $result;
+    }
+
+    /**
+     * create news image directory
+     * @return bool
+     */
+    private function createImgNewsDir()
+    {
+        return mkdir(self::IMG_DIR_NEWS);
     }
 
     /**
@@ -149,6 +158,7 @@ class DashNews extends Module
 
         $return = $this->executeQueries($queries);
         $return &= $this->importData();
+        $return &= $this->copyImagesFromInto(_PS_MODULE_DIR_ . "dashnews/backup/images", _PS_IMG_DIR_ . "dashnews");
 
         return $return;
     }
@@ -229,6 +239,29 @@ class DashNews extends Module
     }
 
     /**
+     * copy all the files from one dir into another
+     * @param $fromDir
+     * @param $intoDir
+     * @return bool
+     */
+    private function copyImagesFromInto($fromDir, $intoDir)
+    {
+        $return = true;
+        if (is_dir($fromDir) && is_dir($intoDir)) {
+            $dirContent = scandir($fromDir);
+            foreach ($dirContent as $key => $name) {
+                if ($name !== ".." && $name != ".")// parent directory and current directory
+                {
+                    $return &= rename($fromDir . "/{$name}", $intoDir . "/{$name}");
+                }
+            }
+            return $return;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * create admin tabs after tabs field of this class
      * @return bool
      * @throws PrestaShopDatabaseException
@@ -274,15 +307,6 @@ class DashNews extends Module
         $tab->id_parent = $idParent;
         $tab->class_name = $className;
         return ($tab->save()) ? $tab : false;
-    }
-
-    /**
-     * create news image directory
-     * @return bool
-     */
-    private function createImgNewsDir()
-    {
-        return mkdir(self::IMG_DIR_NEWS);
     }
 
     public function uninstall()
@@ -332,17 +356,21 @@ class DashNews extends Module
     }
 
     /**
+     * copy images
      * create a backup file
      * @return bool
      */
     private function exportData()
     {
+        $return = true;
+
+        $return &= $this->copyImagesFromInto(_PS_IMG_DIR_ . '/dashnews', _PS_MODULE_DIR_ . '/dashnews/backup/images');
+
         $file = fopen(_PS_MODULE_DIR_ . 'dashnews/backup/backup.csv', 'w');
 
         //number of tables
         fwrite($file, "5" . "\n");
 
-        $return = true;
 
         $return &= $this->exportDataFromTable('news', $file);
         $return &= $this->exportDataFromTable('news_lang', $file);
@@ -431,38 +459,22 @@ class DashNews extends Module
 
     private function deleteImgNewsDir()
     {
-        if (!is_dir(self::IMG_DIR_NEWS)) {
-            return false;
-        }
-
-        $this->readDirAndDeleteAllFiles(self::IMG_DIR_NEWS);
-        return true;
-    }
-
-    private function readDirAndDeleteAllFiles($path)
-    {
-        $dirContent = scandir($path);
-
-        foreach ($dirContent as $key => $name) {
-            if ($name !== ".." && $name != ".")// parent directory and current directory
-            {
-                $fileName = $path . "/{$name}";
-                if (is_dir($fileName)) {
-                    readDirAndDeleteAllFiles($fileName);
-                } else {
-                    unlink($fileName);
-                }
-            }
-        }
-        rmdir($path);
+        return rmdir(self::IMG_DIR_NEWS);
     }
 
     public function hookDisplayHome($parameters)
     {
-        $news = News::getAll(4);
+        $error = "";
+        try {
+            $news = News::getAll(4);
+        } catch (PrestaShopDatabaseException $e) {
+            $error = "Server error";
+        }
+
         $this->context->smarty->assign(array(
             'title' => 'News',
-            'news' => $news
+            'news' => $news,
+            'error' => $error
         ));
 
         $this->context->controller->addCSS("modules/dashnews/views/css/news_page.css");
@@ -476,7 +488,7 @@ class DashNews extends Module
         return $this->display(__FILE__, 'news_tab.tpl');
     }
 
-    public function hookHeader($params)
+    public function hookActionFrontControllerSetMedia($params)
     {
         $this->context->controller->addCSS("modules/dashnews/views/css/news_tab.css");
     }
@@ -513,7 +525,7 @@ class DashNews extends Module
                     'module' => 'dashnews',
                     'controller' => 'news'
                 ]
-            ]
+            ],
         );
     }
 
@@ -525,7 +537,7 @@ class DashNews extends Module
             $newsPageTitle = strval(Tools::getValue('title'));
             $numberOfNews = strval(Tools::getValue('numberOfNews'));
 
-            if (!is_numeric($numberOfNews) || !$newsPageTitle || empty($newsPageTitle) || !Validate::isGenericName($newsPageTitle) ) {
+            if (!is_numeric($numberOfNews) || !$newsPageTitle || empty($newsPageTitle) || !Validate::isGenericName($newsPageTitle)) {
                 $output .= $this->displayError($this->l('Invalid Configuration value'));
             } else {
                 Configuration::updateValue('NEWS_PAGE_TITLE', $newsPageTitle);
@@ -587,4 +599,23 @@ class DashNews extends Module
 
         return $helper->generateForm($fieldsForm);
     }
+
+    private function readDirAndDeleteAllFiles($path)
+    {
+        $dirContent = scandir($path);
+
+        foreach ($dirContent as $key => $name) {
+            if ($name !== ".." && $name != ".")// parent directory and current directory
+            {
+                $fileName = $path . "/{$name}";
+                if (is_dir($fileName)) {
+                    readDirAndDeleteAllFiles($fileName);
+                } else {
+                    unlink($fileName);
+                }
+            }
+        }
+        rmdir($path);
+    }
+
 }
