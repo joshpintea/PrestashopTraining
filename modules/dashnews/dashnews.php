@@ -73,42 +73,42 @@ class DashNews extends Module
         $result = true;
         if (!parent::install()) {
             $result = false;
-            $this->context->controller->errors[] = "can't installed the module";
+            $this->_errors[] = "can't installed the module";
         }
 
         if ($result && !$this->createImgNewsDir()) {
             $result = false;
-            $this->context->controller->errors[] = "can't create images dir";
+            $this->_errors[] = "can't create images dir";
         }
 
         if ($result && !$this->createTables()) {
             $result = false;
-            $this->context->controller->errors[] = "can't create tables";
+            $this->_errors[] = "can't create tables";
         }
 
         if ($result && !$this->createNavTabs()) {
             $result = false;
-            $this->context->controller->errors[] = "can't create nav tabs";
+            $this->_errors[] = "can't create nav tabs";
         }
 
         if ($result && !$this->registerHook('displayHome')) {
             $result = false;
-            $this->context->controller->errors[] = "can't register displayHome hook";
+            $this->_errors[] = "can't register displayHome hook";
         }
 
         if ($result && !$this->registerHook('displayNav2')) {
             $result = false;
-            $this->context->controller->errors[] = "can't register displayNav2 hook";
+            $this->_errors[] = "can't register displayNav2 hook";
         }
 
         if ($result && !$this->registerHook('moduleRoutes')) {
             $result = false;
-            $this->context->controller->errors[] = "can't register moduleRoutes hook";
+            $this->_errors[] = "can't register moduleRoutes hook";
         }
 
         if ($result && !$this->registerHook('actionFrontControllerSetMedia')) {
             $result = false;
-            $this->context->controller->errors[] = "can't register header hook";
+            $this->_errors[] = "can't register header hook";
         }
 
         return $result;
@@ -314,22 +314,22 @@ class DashNews extends Module
         $result = true;
         if (!parent::uninstall()) {
             $result = false;
-            $this->context->controller->errors[] = "can't uninstall the module";
+            $this->_errors[] = "can't uninstall the module";
         }
 
         if ($result && !$this->deleteTables()) {
             $result = false;
-            $this->context->controller->errors[] = "can't delete tables";
+            $this->_errors[] = "can't delete tables";
         }
 
         if ($result && !$this->deleteNavTabs()) {
             $result = false;
-            $this->context->controller->errors[] = "can't delete nav tabs";
+            $this->_errors[] = "can't delete nav tabs";
         }
 
         if ($result && !$this->deleteImgNewsDir()) {
             $result = false;
-            $this->context->controller->errors[] = "can't delete img news dir";
+            $this->_errors[] = "can't delete img news dir";
         }
 
         return $result;
