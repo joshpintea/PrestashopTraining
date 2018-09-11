@@ -477,6 +477,7 @@ class DashNews extends Module
             'error' => $error
         ));
 
+
         $this->context->controller->addCSS("modules/dashnews/views/css/news_page.css");
 
         return $this->display(__FILE__, 'display_news.tpl');

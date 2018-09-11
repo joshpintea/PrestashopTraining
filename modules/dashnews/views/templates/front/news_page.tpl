@@ -31,7 +31,7 @@
             {foreach from=$news key=id item=n}
                 <a href="{$link->getModuleLink('dashnews', 'newsletterpage',['id_news'=>{$n.id_news}])}">
                     <div class='news'>
-                        <div class='news-title'><h1>{l s="Title"}</h1>{$n.title}</div>
+                        <div class='news-title'><h1>{l s="Title"}:</h1>{$n.title}</div>
                         <div class='news-description'><b>{l s="Description"}:</b>{$n.description}</div>
                         <div class='news-image'
                              style="background-image: url('{if $n.image==''}../../modules/dashnews/default.jpg{else}../../../img/dashnews/{$n.image}{/if}')">
@@ -39,6 +39,12 @@
                     </div>
                 </a>
             {/foreach}
+            <div class="displayTotal">Showing: {$from} to {$to} of {$totalNews} entries</div>
+
+        </div>
+        <div>
+            <a type="submit" id="prev">Previous</a>
+            <a type="submit" id="next">Next</a>
         </div>
     </div>
 {/block}

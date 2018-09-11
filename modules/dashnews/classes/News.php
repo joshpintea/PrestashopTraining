@@ -53,10 +53,11 @@ class News extends ObjectModel
      * return all news from db who are actives and date_to is greater than current date
      * @param int $limit represents the limit of the query
      * @param string $filter
+     * @param int $page
      * @return array|false|mysqli_result|null|PDOStatement|resource
      * @throws PrestaShopDatabaseException
      */
-    public static function getAll($limit = 0, $filter = '')
+    public static function getAll($limit = 0, $filter = '',$page = 0)
     {
         $currentDate = date("Y-m-d");
 
@@ -72,7 +73,7 @@ class News extends ObjectModel
 
         $query->orderBy('n.date_to DESC');
         if ($limit != 0) {
-            $query->limit($limit);
+            $query->limit($limit,$limit * $page);
         };
 
         return Db::getInstance()->executeS($query);
@@ -133,5 +134,25 @@ class News extends ObjectModel
         }
 
         return $result;
+    }
+
+    /**
+     * get number of news
+     * @return false|null|string
+     */
+    public static function getCount($filter = ''){
+        $currentDate = date("Y-m-d");
+
+        $query = new DbQuery();
+        $query->select('count(*)');
+        $query->from('news', 'n');
+        $query->leftJoin('news_lang', 'nl', 'nl.`id_news` = n.`id_news`');
+
+        $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id);
+        $query->where('n.`active` = true');
+        $query->where('n.`date_to` > ' . "'" . $currentDate . "'");
+        $query->where('nl.`title` LIKE ' . "'%{$filter}%'");
+
+        return Db::getInstance()->getValue($query);
     }
 }

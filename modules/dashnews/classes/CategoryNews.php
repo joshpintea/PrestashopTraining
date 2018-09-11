@@ -39,7 +39,7 @@ class CategoryNews extends ObjectModel
         return Db::getInstance()->executeS($query);
     }
 
-    public static function getNewsAfterCategoryId($idCategoryNews, $filter = '')
+    public static function getNewsAfterCategoryId($idCategoryNews, $filter = '',$limit = 0, $page = 0)
     {
         $currentDate = date("Y-m-d");
 
@@ -55,9 +55,29 @@ class CategoryNews extends ObjectModel
         $query->where('ncn.`id_categorynews` = ' . $idCategoryNews);
         $query->where('n.`date_to` > ' . "'" . $currentDate . "'");
         $query->where('nl.`title` LIKE ' . "'%{$filter}%'");
+        if($limit != 0){
+            $query->limit($limit,$limit*$page);
+        }
 
         return Db::getInstance()->executeS($query);
+    }
 
+    public static function getCountNewsAfterCategoryId($idCategoryNews,$filter = ''){
+        $currentDate = date("Y-m-d");
 
+        $query = new DbQuery();
+        $query->select('count(*)');
+        $query->from('news', 'n');
+        $query->leftJoin('news_lang', 'nl', 'n.`id_news`=nl.`id_news`');
+        $query->leftJoin('news_categorynews', 'ncn', 'n.`id_news` = ncn.`id_news`');
+
+        $query->where('nl.`id_lang` = ' . (int)Context::getContext()->language->id);
+        $query->where('n.`active` = true ');
+        $query->where('ncn.`id_categorynews` = ' . $idCategoryNews);
+        $query->where('ncn.`id_categorynews` = ' . $idCategoryNews);
+        $query->where('n.`date_to` > ' . "'" . $currentDate . "'");
+        $query->where('nl.`title` LIKE ' . "'%{$filter}%'");
+
+        return Db::getInstance()->getValue($query);
     }
 }
