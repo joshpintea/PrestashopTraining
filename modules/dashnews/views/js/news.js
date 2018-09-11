@@ -91,7 +91,6 @@ function getNews(data) {
         url: window.location.origin + '/modules/dashnews/ajax.php',
         data: data
     }).success(function (response) {
-        console.log(response);
         $newsContent.html(response.html);
         $page = response.page;
     }).error(function (error) {
