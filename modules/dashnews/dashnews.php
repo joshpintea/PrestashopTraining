@@ -40,7 +40,7 @@ class DashNews extends Module
         parent::__construct();
 
         $this->displayName = $this->trans('Dashboard News', array(), 'Modules.Dashnews.Admin');
-        $this->description = $this->trans('See news', array(), 'Modules.Dashnews.Admin');
+        $this->description = $this->trans('Create news and categories', array(), 'Modules.Dashnews.Admin');
     }
 
     private function initTabs()

@@ -25,7 +25,7 @@ class dashnewsnewsModuleFrontController extends ModuleFrontController
             'newsUrl' => 'news',
             'displayNewsUrl' => 'display-newsletter',
             'from' => 0,
-            'to' => (Configuration::get('NUMBER_OF_NEWS_DISPLAYED') < $total) ? Configuration::get('NUMBER_OF_NEWS_DISPLAYED'): $total,
+            'to' => (Configuration::get('NUMBER_OF_NEWS_DISPLAYED') < $total) ? Configuration::get('NUMBER_OF_NEWS_DISPLAYED') : $total,
             'totalNews' => $total
         ));
         $this->setTemplate('module:dashnews/views/templates/front/news_page.tpl');
